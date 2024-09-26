@@ -83,7 +83,7 @@ jobs:
           password: ${{ secrets.TOKEN }}
       - name: Build and Push Docker images
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/build-push-actions@v6
+        uses: docker/build-push-action@v6
         with:
           context: ./product
           push: true
