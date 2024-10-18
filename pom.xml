@@ -6,24 +6,28 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.4</version>
-        <relativePath/>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ecommerce.app</groupId>
     <artifactId>spring-ecommerce-app</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>spring-ecommerce-app</name>
+
     <modules>
+        <module>common-library</module>
+        <module>backoffice-bff</module>
+        <module>media</module>
+        <module>sampledata</module>
         <module>product</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <kotlin.version>1.9.25</kotlin.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <yas.version>1.0-SNAPSHOT</yas.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <revision>1.0-SNAPSHOT</revision>
 
         <sonar.organization>egikarakashi</sonar.organization>
@@ -201,6 +205,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
         </dependency>
+
     </dependencies>
     <build>
         <pluginManagement>
@@ -296,10 +301,10 @@
                     </executions>
                     <configuration>
                         <excludes>
-                            <exclude>com/yas/**/*Application.class</exclude>
-                            <exclude>com/yas/**/config/**</exclude>
-                            <exclude>com/yas/**/exception/**</exclude>
-                            <exclude>com/yas/**/constants/**</exclude>
+                            <exclude>com/ecommerce/app/**/*Application.class</exclude>
+                            <exclude>com/ecommerce/app/**/config/**</exclude>
+                            <exclude>com/ecommerce/app/**/exception/**</exclude>
+                            <exclude>com/ecommerce/app/**/constants/**</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
