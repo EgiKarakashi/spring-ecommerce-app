@@ -15,7 +15,6 @@ import com.ecommerce.app.product.viewmodel.productattribute.ProductAttributeValu
 import io.micrometer.common.util.StringUtils
 import lombok.extern.slf4j.Slf4j
 import org.apache.commons.collections4.CollectionUtils
-import org.apache.commons.collections4.ListUtils
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -400,15 +399,15 @@ class ProductService(
         val product = productRepository
             .findById(productId)
             .orElseThrow { NotFoundException(Constants.ErrorCode.PRODUCT_NOT_FOUND, productId) }
-//        val productImageMedias = mutableListOf<ImageVm?>()
-//        product.productImages?.forEach { image ->
-//           productImageMedias.add(
-//               mediaService.getMedia(image.imageId)?.let { ImageVm(image.imageId, it.url) }
-//           )
-//        }
-//        val thumbnailMedia = product.thumbnailMediaId?.let {
-//            mediaService.getMedia(it)?.let { it1 -> ImageVm(it, it1.url) }
-//        }
+        val productImageMedias = mutableListOf<ImageVm?>()
+        product.productImages?.forEach { image ->
+           productImageMedias.add(
+               mediaService.getMedia(image.imageId)?.let { it.url?.let { it1 -> ImageVm(image.imageId, it1) } }
+           )
+        }
+        val thumbnailMedia = product.thumbnailMediaId?.let {
+            mediaService.getMedia(it)?.let { it1 -> it1.url?.let { it2 -> ImageVm(it, it2) } }
+        }
         val categories = mutableListOf<Category?>()
         product.productCategories?.forEach { category ->
             categories.add(category.category)
@@ -441,7 +440,7 @@ class ProductService(
             product.metaTitle,
             product.metaKeyword,
             product.metaDescription,
-            thumbnailMedia = null,
+            thumbnailMedia,
             productImageMedias = mutableListOf(),
             product.taxClassId
         )
@@ -609,8 +608,7 @@ class ProductService(
                 product.id!!,
                 product.name!!,
                 product.slug!!,
-//                mediaService.getMedia(product.thumbnailMediaId)!!.url,
-                    null,
+                mediaService.getMedia(product.thumbnailMediaId)!!.url,
                 product.price!!
             )
             )
@@ -630,9 +628,7 @@ class ProductService(
                 product.id!!,
                 product.name!!,
                 product.slug!!,
-//                mediaService.getMedia(product.thumbnailMediaId)!!.url
-                null
-            )
+                mediaService.getMedia(product.thumbnailMediaId)!!.url)
             )
         }
         return productThumbnailVms
@@ -656,9 +652,7 @@ class ProductService(
                         product.id!!,
                         product.name!!,
                         product.slug!!,
-                        null,
-        //                mediaService.getMedia(product.thumbnailMediaId).!url
-                    )
+                        mediaService.getMedia(product.thumbnailMediaId)!!.url)
                 )
             }
         }
@@ -682,20 +676,17 @@ class ProductService(
                     product.id!!,
                     product.name!!,
                     product.slug!!,
-//                    thumbnailUrl,
-                    null,
+                    thumbnailUrl,
                     product.price!!
                 )
             } else {
-//                val parentProduct = productRepository.findById(product.parent.id!!)
+                val parentProduct = productRepository.findById(product.parent.id!!)
 
                 ProductThumbnailGetVm(
                     product.id!!,
                     product.name!!,
                     product.slug!!,
-//                    parentProduct.map { pr -> mediaService.getMedia(pr.thumbnailMediaId).url() }
-//                        .orElse(""),
-                    null,
+                    parentProduct.map { pr -> mediaService.getMedia(pr.thumbnailMediaId)?.url }.orElse(""),
                     product.price!!
                 )
             }
@@ -760,10 +751,9 @@ class ProductService(
             product.isFeatured,
             product.hasOptions,
             product.price,
-//            productThumbnailUrl,
-//            productImageMediaUrls
-            null,
-            null
+            productThumbnailUrl,
+            productImageMediaUrls
+
         )
     }
 
@@ -803,8 +793,7 @@ class ProductService(
                 product.id,
                 product.name,
                 product.slug,
-//                mediaService.getMedia(product.thumbnailMediaId)?.url,
-                null,
+                mediaService.getMedia(product.thumbnailMediaId)?.url,
                 product.price
             )
             )
@@ -844,10 +833,9 @@ class ProductService(
                     product.gtin,
                     product.price,
                     image,
-//                    product.productImages?.map { productImage ->
-//                        ImageVm(productImage.imageId, mediaService.getMedia(productImage.imageId)?.url!!)
-//                    },
-                    null,
+                    product.productImages?.map { productImage ->
+                        ImageVm(productImage.imageId, mediaService.getMedia(productImage.imageId)?.url!!)
+                    },
                     options
                 )
             }
@@ -933,15 +921,13 @@ class ProductService(
                     relatedProduct?.id,
                     relatedProduct?.name,
                     relatedProduct?.slug,
-//                    mediaService.getMedia(relatedProduct.thumbnailMediaId).url,
-                    null,
+                    mediaService.getMedia(relatedProduct?.thumbnailMediaId)?.url,
                     relatedProduct?.price
                 )
             }
             .toList()
         return ProductsGetVm(
-//            productThumbnailVms,
-            null,
+            productThumbnailVms,
             relatedProductsPage.number,
             relatedProductsPage.size,
             relatedProductsPage.totalElements.toInt(),
@@ -977,7 +963,7 @@ class ProductService(
     fun partitionUpdateStockQuantityByCalculation(
         productQuantityItems: List<ProductQuantityPutVm>,
         calculation: BiFunction<Long, Long, Long>
-    ): Unit {
+    ) {
         val productIds = productQuantityItems.stream()
             .map(ProductQuantityPutVm::productId)
             .toList()

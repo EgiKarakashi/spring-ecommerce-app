@@ -21,4 +21,6 @@ data class ProductCategory(
     val displayOrder: Int? = null,
 
     val isFeaturedProduct: Boolean? = null
-)
+) {
+    constructor(): this(null, null, null, null, null)
+}

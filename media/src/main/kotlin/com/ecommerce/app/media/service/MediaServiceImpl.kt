@@ -65,7 +65,7 @@ class MediaServiceImpl(
     }
 
     override fun getFile(id: Long, fileName: String): MediaDto? {
-        val media = mediaRepository.findById(id).orElse(null) ?: return null
+        val media = mediaRepository.findById(id).orElse(null)
 
         if (!fileName.equals(media.fileName, ignoreCase = true)) {
             return null

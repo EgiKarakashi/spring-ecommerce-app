@@ -15,31 +15,31 @@ import kotlin.jvm.Throws
 @Configuration
 class SecurityConfig {
 
-//    @Bean
-//    @Throws(Exception::class)
-//    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-//        return http
-//            .authorizeHttpRequests { auth ->
-//                auth.requestMatchers("/actuator/prometheus", "/actuator/health/**", "/swagger-ui",
-//                    "swagger-ui/**", "/error", "/v3/api-docs").permitAll()
-//                    .requestMatchers(HttpMethod.GET, "/medias/**").permitAll()
-//                    .anyRequest().authenticated()
-//            }
-//            .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }
-//            .build()
-//    }
-
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .authorizeHttpRequests { auth ->
-                auth
-                    .anyRequest().permitAll() // Allow all requests
+                auth.requestMatchers("/actuator/prometheus", "/actuator/health/**", "/swagger-ui",
+                    "swagger-ui/**", "/error", "/v3/api-docs").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/medias/**").permitAll()
+                    .anyRequest().authenticated()
             }
-            .csrf().disable() // Disable CSRF protection if needed
+            .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }
             .build()
     }
+
+//    @Bean
+//    @Throws(Exception::class)
+//    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+//        return http
+//            .authorizeHttpRequests { auth ->
+//                auth
+//                    .anyRequest().permitAll() // Allow all requests
+//            }
+//            .csrf().disable() // Disable CSRF protection if needed
+//            .build()
+//    }
 
     @Bean
     fun jwtAuthenticationConverterForKeycloak(): JwtAuthenticationConverter {

@@ -1127,7 +1127,7 @@
       "redirectUris": [
         "http://localhost:8081/*",
         "http://localhost:8092/*",
-        "http://localhost:8080/*",
+        "http://localhost:7080/*",
         "http://localhost:8091/*",
         "http://localhost:8083/*",
         "http://localhost:8093/*",

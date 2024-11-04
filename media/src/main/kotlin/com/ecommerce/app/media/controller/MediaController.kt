@@ -5,6 +5,7 @@ import com.ecommerce.app.media.viewmodel.ErrorVm
 import com.ecommerce.app.media.viewmodel.MediaPostVm
 import com.ecommerce.app.media.viewmodel.MediaVm
 import com.ecommerce.app.media.viewmodel.NoFileMediaVm
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -83,32 +84,14 @@ class MediaController(
         return ResponseEntity.ok().body(media)
     }
 
+    @Hidden
     @GetMapping("/medias/{id}/file/{fileName}")
     fun getFile(@PathVariable id: Long, @PathVariable fileName: String): ResponseEntity<InputStreamResource> {
         val mediaDto = mediaService.getFile(id, fileName)
-        logger.info("Retrieved media: $mediaDto")
 
-        val resource = resourceLoader.getResource("classpath:images/$fileName")
-
-        return if (mediaDto?.content != null && resource.exists() && resource.isReadable) {
-            ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$fileName\"")
-                .contentType(mediaDto.mediaType ?: MediaType.APPLICATION_OCTET_STREAM)
-                .body(InputStreamResource(resource.inputStream))
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
-        }
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$fileName\"")
+            .contentType(mediaDto?.mediaType!!)
+            .body(InputStreamResource(mediaDto.content!!))
     }
-
-
-    @GetMapping("/test-directory")
-    fun testDirectory(): ResponseEntity<String> {
-        val path = Paths.get("/images/")
-        return if (Files.exists(path)) {
-            ResponseEntity.ok("Directory exists")
-        } else {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Directory does not exist")
-        }
-    }
-
 }

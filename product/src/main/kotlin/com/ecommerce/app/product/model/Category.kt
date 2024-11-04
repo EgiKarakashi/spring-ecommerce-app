@@ -10,25 +10,25 @@ data class Category(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    val name: String? = null,
+    var name: String? = null,
 
-    val description: String? = null,
+    var description: String? = null,
 
-    val slug: String? = null,
+    var slug: String? = null,
 
-    val metaKeyword: String? = null,
+    var metaKeyword: String? = null,
 
-    val metaDescription: String? = null,
+    var metaDescription: String? = null,
 
-    val displayOrder: Short? = null,
+    var displayOrder: Short? = null,
 
-    val isPublished: Boolean? = null,
+    var isPublished: Boolean? = null,
 
-    val imageId: Long? = null,
+    var imageId: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    val parent: Category? = null,
+    var parent: Category? = null,
 
     @OneToMany(mappedBy = "parent", cascade = [CascadeType.REMOVE])
     @JsonIgnore
@@ -37,4 +37,8 @@ data class Category(
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     val productCategories: List<ProductCategory>? = mutableListOf()
-): AbstractAuditEntity()
+): AbstractAuditEntity() {
+    override fun toString(): String {
+        return "Category(id=$id, name=$name, description=$description, slug=$slug)"
+    }
+}

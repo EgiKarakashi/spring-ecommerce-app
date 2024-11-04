@@ -13,7 +13,7 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://identity/realms/Ecommerce
+            issuer-uri: http://localhost:8181/realms/Ecommerce
         registration:
           api-client:
             provider: keycloak

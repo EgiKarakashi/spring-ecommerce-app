@@ -11,11 +11,11 @@ data class CategoryPostVm(
     val name: String,
     @field:NotBlank
     val slug: String,
-    val description: String,
-    val parentId: Long,
-    val metaKeywords: String,
-    val metaDescription: String,
-    val displayOrder: Short,
-    val isPublish: Boolean,
-    val imageId: Long
+    val description: String?,
+    val parentId: Long?,
+    val metaKeywords: String?,
+    val metaDescription: String?,
+    val displayOrder: Short?,
+    val isPublish: Boolean?,
+    val imageId: Long?
 )

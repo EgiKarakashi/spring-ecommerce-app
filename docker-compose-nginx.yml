@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.25.3
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/customer_proxy_settings.conf
+    ports:
+      - "80:80"
+
+networks:
+  ecommerce-network:
+    driver: bridge
+    name: ecommerce-network

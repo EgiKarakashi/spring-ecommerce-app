@@ -26,8 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @Validated
 @RestController
-class
-ProductController(
+class ProductController(
     private val productService: ProductService,
     private val productDetailService: ProductDetailService
 ) {

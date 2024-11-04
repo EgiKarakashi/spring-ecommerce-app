@@ -5,22 +5,24 @@
     <parent>
         <groupId>com.ecommerce.app</groupId>
         <artifactId>spring-ecommerce-app</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath> <!-- Assuming parent pom is one directory up -->
     </parent>
 
     <artifactId>sampledata</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>sampledata</name>
     <description>Spring Ecommerce Sample Data service</description>
 
-
     <properties>
+        <!-- Referencing from the parent POM -->
         <sonar.organization>egikarakashi</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.projectKey>EgiKarakashi_spring-ecommerce-app</sonar.projectKey>
     </properties>
+
     <dependencies>
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -37,27 +39,34 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.16.1</version>
-        </dependency>
+
+        <!-- PostgreSQL Runtime Dependency -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Commons IO for File Manipulation -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-            <version>2.0.1.Final</version>
-            <scope>compile</scope>
-        </dependency>
+
+        <!-- Kotlin Dependencies -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
@@ -66,31 +75,18 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Common Library Dependency -->
         <dependency>
             <groupId>com.ecommerce.app</groupId>
             <artifactId>common-library</artifactId>
-            <version>1.0-SNAPSHOT</version>
-<!--            <classifier>classes</classifier>-->
+            <version>${revision}</version> <!-- Using the revision from parent POM -->
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.ecommerce.app</groupId>-->
-<!--            <artifactId>common-library</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--            <classifier>tests</classifier>-->
-<!--            <type>test-jar</type>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>

@@ -10,7 +10,8 @@ import java.util.Optional
 interface CategoryRepository: JpaRepository<Category, Long> {
     fun findBySlug(slug: String): Optional<Category>
 
-    @Query("SELECT e FROM Category e WHERE e.name = ?1 and (?2 IS NULL OR e.id != ?2)")
+    @Query("select e from Category e where e.name = ?1 and (?2 is null or e.id != ?2)")
+//@Query("select e from Category e where e.name = ?1 and e.id = ?2")
     fun findExistedName(name: String, id: Long): Category
 
     fun findByNameContainingIgnoreCase(name: String): List<Category>
