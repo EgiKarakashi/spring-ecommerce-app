@@ -35,7 +35,7 @@
         <kotlin.version>1.9.25</kotlin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <revision>1.2.3</revision>
+        <revision>1.2.4-SNAPSHOT</revision>
 
         <sonar.organization>egikarakashi</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
