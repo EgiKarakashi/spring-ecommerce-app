@@ -11,7 +11,7 @@ data class CheckoutItem(
     val id: Long? = null,
     val productId: String? = null,
     @Column(name = "checkout_id")
-    val checkoutId: String? = null,
+    var checkoutId: String? = null,
     @Column(name = "name")
     val productName: String? = null,
     val quantity: Int? = null,

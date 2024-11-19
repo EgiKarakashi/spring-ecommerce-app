@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
 @Mapper(componentModel = "spring")
 @Component
 interface OrderMapper {
-
     @Mapping(target = "phone", source = "billingAddressVm.phone")
     @Mapping(target = "id", source = "id")
-    fun toCsv(orderItem: OrderBriefVm): OrderItemCsv
+    fun toCsv(orderItem: OrderBriefVm?): OrderItemCsv?
 }

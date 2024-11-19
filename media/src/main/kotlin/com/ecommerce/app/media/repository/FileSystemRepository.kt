@@ -1,11 +1,14 @@
 package com.ecommerce.app.media.repository
 
 import com.ecommerce.app.media.config.FilesystemConfig
+import lombok.SneakyThrows
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.lang.IllegalStateException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -19,23 +22,8 @@ class FileSystemRepository(
         private const val DIRECTORY_DOES_NOT_EXIST = "Directory %s does not exist."
     }
 
-    // Get the user's home directory
-//    private val homeDirectory = System.getProperty("user.home")
-
-    // Full path combining home directory and configured directory
-    private val baseDirectory = Paths.get(filesystemConfig.directory).toAbsolutePath().normalize()
-
-    init {
-        // Ensure the directory exists at startup
-        val directoryFile = baseDirectory.toFile()
-        if (!directoryFile.exists()) {
-            directoryFile.mkdirs() // Create the directory if it doesn't exist
-            log.info("Created directory: ${directoryFile.absolutePath}")
-        }
-    }
-
     fun persistFile(filename: String, content: ByteArray): String {
-        val directory = baseDirectory.toFile()
+        val directory = File(filesystemConfig.directory)
         checkDirectoryExists(directory)
         checkDirectoryPermissions(directory)
 
@@ -45,25 +33,34 @@ class FileSystemRepository(
         return filePath.toString()
     }
 
-    @Throws(IOException::class)
+    @SneakyThrows
     fun getFile(filePath: String): InputStream {
-//        log.info("User home path: $homeDirectory")
         val path = Paths.get(filePath)
-        require(path.toFile().exists()) { String.format(DIRECTORY_DOES_NOT_EXIST, filesystemConfig.directory) }
-
-        return path.toFile().inputStream()
+        if (!Files.exists(path)) {
+            throw IllegalStateException(String.format(DIRECTORY_DOES_NOT_EXIST, filesystemConfig.directory))
+        }
+        try {
+            return Files.newInputStream(path)
+        } catch (e: IOException) {
+            throw RuntimeException("Failed to read file: $filePath $e")
+        }
     }
 
     fun buildFilePath(filename: String): Path {
-        require(!filename.contains("..") && !filename.contains("/") && !filename.contains("\\")) { "Invalid filename" }
-        // Combine the base directory (user home + configured directory) with the filename
-        val filePath = baseDirectory.resolve(filename).normalize()
-        require(filePath.startsWith(baseDirectory)) { "Invalid file path" }
+        if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+            throw IllegalArgumentException("Invalid filename")
+        }
+
+        val filePath = Paths.get(filesystemConfig.directory, filename).toAbsolutePath().normalize()
+
+        if (!filePath.startsWith(filesystemConfig.directory)) {
+            throw IllegalArgumentException("Invalid file path")
+        }
         return filePath
     }
 
     private fun checkDirectoryExists(directory: File) {
-        require(directory.exists()) { String.format(DIRECTORY_DOES_NOT_EXIST, baseDirectory.toString()) }
+        require(directory.exists()) { String.format(DIRECTORY_DOES_NOT_EXIST, filesystemConfig.directory) }
     }
 
     private fun checkDirectoryPermissions(directory: File) {

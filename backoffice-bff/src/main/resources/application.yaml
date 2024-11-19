@@ -44,41 +44,48 @@ spring:
     gateway:
       routes:
         # Changes for your local development should not be committed
-        - id: api_servicename_local
-          uri: http://localhost:7085
+        - id: api_product_local
+          uri: http://localhost:7080
           predicates:
-            - Path=/api/servicename/**
+            - Path=/api/product/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - TokenRelay=
-        - id: api
-          uri: http://api.yas.local
+        -  id: api_tax_local
+           uri: http://localhost:7091
+           predicates:
+             - Path=/api/tax/**
+           filters:
+             - RewritePath=/api/(?<segment>.*), /$\{segment}
+             - TokenRelay=
+        - id: api_media_local
+          uri: http://localhost:7083
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - TokenRelay=
         - id: nextjs
-          uri: http://localhost:3001
+          uri: http://localhost:3000
           predicates:
             - Path=/**
 ---
-spring:
-  config:
-    activate:
-      on-profile: "prod"
-  cloud:
-    gateway:
-      routes:
-        - id: api
-          uri: http://nginx
-          predicates:
-            - Path=/api/**
-          filters:
-            - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
-            - TokenRelay=
-            - StripPrefix=1
-        - id: nextjs
-          uri: http://backoffice-nextjs:3001
-          predicates:
-            - Path=/**
+#spring:
+#  config:
+#    activate:
+#      on-profile: "prod"
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: api
+#          uri: http://nginx
+#          predicates:
+#            - Path=/api/**
+#          filters:
+#            - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+#            - TokenRelay=
+#            - StripPrefix=1
+#        - id: nextjs
+#          uri: http://backoffice-nextjs:3000
+#          predicates:
+#            - Path=/**

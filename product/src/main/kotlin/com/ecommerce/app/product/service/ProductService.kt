@@ -56,7 +56,6 @@ class ProductService(
         val productCategories = setProductCategories(productPostVm.categoryIds, savedMainProduct)
         val productImages = setProductImages(productPostVm.productImageIds, savedMainProduct)
         productImageRepository.saveAll(productImages)
-        productCategoryRepository.saveAll(productCategories)
 
         createProductRelations(productPostVm, savedMainProduct)
         if (productPostVm.variations.isEmpty() || productPostVm.productOptionValues.isEmpty()) {
@@ -183,25 +182,25 @@ class ProductService(
     }
 
     private fun createProductVariationsFromPutVm(newVariationVms: List<ProductVariationPutVm>, mainProduct: Product,
-                                                 existingVariationImages: List<ProductImage>): List<Product> {
-        val allVariationImages = existingVariationImages.toMutableList()
+                                                 existingVariationImages: List<ProductImage>?): List<Product> {
+        val allVariationImages = existingVariationImages?.toMutableList()
         return performCreateVariations(newVariationVms, mainProduct, allVariationImages)
     }
 
     private fun performCreateVariations(
         newVariationVms: List<out ProductVariationSaveVm>,
         mainProduct: Product,
-        allVariationImages: MutableList<ProductImage>
+        allVariationImages: MutableList<ProductImage>?
     ): List<Product> {
         val productVariations = newVariationVms.map { variation ->
             val productVariation = buildProductVariationFromVm(variation, mainProduct)
             val variationImages = setProductImages(variation.productImageIds(), productVariation)
-            allVariationImages.addAll(variationImages)
+            allVariationImages?.addAll(variationImages)
             productVariation
         }
 
         val savedVariations = productRepository.saveAll(productVariations)
-        productImageRepository.saveAll(allVariationImages)
+        productImageRepository.saveAll(allVariationImages!!)
         return savedVariations
     }
 
@@ -292,7 +291,7 @@ class ProductService(
         if (CollectionUtils.isEmpty(productPostVm.relatedProductIds)) {
             return
         }
-        val relatedProducts = productPostVm.relatedProductIds.let { productRepository.findAllById(it) }
+        val relatedProducts = productPostVm.relatedProductIds.let { productRepository.findAllById(it!!) }
         val productRelations = relatedProducts.stream()
             .map { relatedProduct -> ProductRelated(
                 product = savedMainProduct,
@@ -320,7 +319,7 @@ class ProductService(
     ): List<ProductOptionValue> {
         val optionValues = mutableListOf<ProductOptionValue>()
 
-        productPostVm.productOptionValues.forEach { optionValueVm ->
+        productPostVm.productOptionValues!!.forEach { optionValueVm ->
             optionValueVm.value.forEach { value ->
                 val optionValue =
                     ProductOptionValue(

@@ -50,8 +50,10 @@ class MediaService(
         }
         val url: URI = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.media)
             .path("/{id}").buildAndExpand(id).toUri()
+        val jwt: String = (SecurityContextHolder.getContext().authentication.principal as Jwt).tokenValue
         return restClient.get()
             .uri(url)
+            .headers { h -> h.setBearerAuth(jwt) }
             .retrieve()
             .body(NoFileMediaVm::class.java)
     }

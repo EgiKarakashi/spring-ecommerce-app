@@ -37,8 +37,6 @@ class MediaController(
     val resourceLoader: ResourceLoader
 ) {
 
-    val logger = LoggerFactory.getLogger(MediaVm::class.java)
-
     @PostMapping(path = ["/medias"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ApiResponses(
         value = [

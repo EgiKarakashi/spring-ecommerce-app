@@ -12,7 +12,6 @@ import java.time.ZonedDateTime
 
 @CsvName(fileName = "Orders")
 open class OrderItemCsv(
-    id: Long? = null, // inherited property from BaseCsv
     @CsvColumn(columnName = "Order status")
     var orderStatus: OrderStatus? = null,
 
@@ -32,6 +31,8 @@ open class OrderItemCsv(
     var deliveryStatus: DeliveryStatus? = null,
 
     @CsvColumn(columnName = "Created on")
-    var createdOn: ZonedDateTime? = null
+    var createdOn: ZonedDateTime? = null,
+
+    id: Long?
 ) : BaseCsv(id)
 

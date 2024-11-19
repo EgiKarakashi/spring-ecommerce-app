@@ -28,6 +28,18 @@ class SecurityConfig {
             .build()
     }
 
+//    @Bean
+//    @Throws(Exception::class)
+//    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+//        return http
+//            .authorizeHttpRequests { auth ->
+//                auth
+//                    .anyRequest().permitAll() // Allow all requests
+//            }
+//            .csrf().disable() // Disable CSRF protection if needed
+//            .build()
+//    }
+
 
     @Bean
     fun jwtAuthenticationConverterForKeycloak(): JwtAuthenticationConverter {

@@ -16,11 +16,9 @@ data class ProductCategory(
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    val category: Category?,
+    val category: Category? = null,
 
     val displayOrder: Int? = null,
 
     val isFeaturedProduct: Boolean? = null
-) {
-    constructor(): this(null, null, null, null, null)
-}
+)

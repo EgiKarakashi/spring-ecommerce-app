@@ -10,14 +10,14 @@ import java.math.BigDecimal
 @Table(name = "checkout")
 data class Checkout(
     @Id
-    val id: String? = null,
+    var id: String? = null,
     val email: String? = null,
     val note: String? = null,
     @Column(name = "promotion_code")
     val couponCode: String? = null,
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    val checkoutState: CheckoutState? = null,
+    var checkoutState: CheckoutState? = null,
     @SuppressWarnings("unused")
     val progress: String? = null,
     @SuppressWarnings("unused")
@@ -37,7 +37,7 @@ data class Checkout(
     @Column(name = "attributes", columnDefinition = "jsonb")
     val attributes: String? = null,
     @SuppressWarnings("unused")
-    val totalAmount: BigDecimal? = null,
+    var totalAmount: BigDecimal? = null,
     @SuppressWarnings("unused")
     val totalShipmentFee: BigDecimal? = null,
     @SuppressWarnings("unused")
@@ -45,5 +45,5 @@ data class Checkout(
     @SuppressWarnings("unused")
     val totalTax: BigDecimal? = null,
     @SuppressWarnings("unused")
-    val totalDiscountAmount: BigDecimal? = null
+    var totalDiscountAmount: BigDecimal? = null
 ): AbstractAuditEntity()

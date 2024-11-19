@@ -17,7 +17,7 @@ data class ProductPutVm(
     @field:NotBlank
     val slug: String,
     val brandId: Long = 0L,
-    val categoryIds: List<Long> = emptyList(),
+    val categoryIds: List<Long>? = emptyList(),
     val shortDescription: String = "",
     val description: String = "",
     val specification: String = "",
@@ -39,7 +39,7 @@ data class ProductPutVm(
     val metaKeyword: String = "",
     val metaDescription: String = "",
     val thumbnailMediaId: Long = 0L,
-    val productImageIds: List<Long> = emptyList(),
+    val productImageIds: List<Long>? = emptyList(),
     val variations: List<ProductVariationPutVm> = emptyList(),
     val productOptionValues: List<ProductOptionValuePutVm> = emptyList(),
     val relatedProductIds: List<Long> = emptyList(),

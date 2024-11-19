@@ -14,12 +14,13 @@ import com.ecommerce.app.search.viewmodel.ProductGetVm
 import com.ecommerce.app.search.viewmodel.ProductNameGetVm
 import com.ecommerce.app.search.viewmodel.ProductNameListVm
 import org.elasticsearch.common.unit.Fuzziness
-import org.elasticsearch.search.SearchHit
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.elasticsearch.UncategorizedElasticsearchException
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation
 import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.core.*
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter
 import org.springframework.stereotype.Service
 
@@ -29,16 +30,30 @@ class ProductService(
 ) {
 
     fun findProductAdvance(productCriteria: ProductCriteriaDto): ProductListGetVm {
+//        val nativeQuery = NativeQuery.builder()
+//            .withAggregation("categories", Aggregation.of { a ->
+//                a.terms { ta -> ta.field(ProductField.CATEGORIES) }
+//            })
+//            .withAggregation("attributes", Aggregation.of { a ->
+//                a.terms { ta -> ta.field(ProductField.ATTRIBUTES) }
+//            })
+//            .withAggregation("brands", Aggregation.of { a ->
+//                a.terms { ta -> ta.field(ProductField.BRAND) }
+//            })
+//            .withQuery { q ->
+//                q.bool { b ->
+//                    b.should { s ->
+//                        s.multiMatch { m ->
+//                            m.fields(ProductField.NAME, ProductField.BRAND, ProductField.CATEGORIES)
+//                                .query(productCriteria.keyword)
+//                                .fuzziness(Fuzziness.ONE.asString())
+//                        }
+//                    }
+//                }
+//            }
+//            .withPageable(PageRequest.of(productCriteria.page, productCriteria.size))
+
         val nativeQuery = NativeQuery.builder()
-            .withAggregation("categories", Aggregation.of { a ->
-                a.terms { ta -> ta.field(ProductField.CATEGORIES) }
-            })
-            .withAggregation("attributes", Aggregation.of { a ->
-                a.terms { ta -> ta.field(ProductField.ATTRIBUTES) }
-            })
-            .withAggregation("brands", Aggregation.of { a ->
-                a.terms { ta -> ta.field(ProductField.BRAND) }
-            })
             .withQuery { q ->
                 q.bool { b ->
                     b.should { s ->
@@ -51,6 +66,7 @@ class ProductService(
                 }
             }
             .withPageable(PageRequest.of(productCriteria.page, productCriteria.size))
+
 
         nativeQuery.withFilter { f ->
             f.bool { b ->
@@ -69,12 +85,19 @@ class ProductService(
             else -> nativeQuery.withSort(Sort.by(Sort.Direction.DESC, ProductField.CREATE_ON))
         }
 
-        val searchHitsResult: SearchHits<Product> = elasticsearchOperations.search(nativeQuery.build(), Product::class.java)
+        val searchHitsResult: SearchHits<Product>
+
+        try {
+            searchHitsResult = elasticsearchOperations.search(nativeQuery.build(), Product::class.java)
+        } catch (e: UncategorizedElasticsearchException) {
+            println("Elasticsearch error: ${e.cause?.message}")
+            throw e
+        }
+
         val productPage: SearchPage<Product> = SearchHitSupport.searchPageFor(searchHitsResult, nativeQuery.pageable)
 
-        val productListVmList: List<ProductGetVm> = searchHitsResult.stream()
+        val productListVmList: List<ProductGetVm> = searchHitsResult.searchHits
             .map { i -> ProductGetVm.fromModel(i.content) }
-            .toList()
 
         return ProductListGetVm(
             productListVmList,
@@ -85,6 +108,7 @@ class ProductService(
             productPage.isLast,
             getAggregations(searchHitsResult)
         )
+
     }
 
     private fun extractedTermsFilter(fieldValues: String?, productField: String, b: BoolQuery.Builder) {

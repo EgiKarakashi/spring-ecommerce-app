@@ -39,10 +39,10 @@ data class ProductPostVm(
     val metaKeyword: String = "",
     val metaDescription: String = "",
     val thumbnailMediaId: Long = 0L,
-    val productImageIds: List<Long> = emptyList(),
+    val productImageIds: List<Long>? = emptyList(),
     val variations: List<ProductVariationPostVm> = emptyList(),
     val productOptionValues: List<ProductOptionValuePostVm> = emptyList(),
-    val relatedProductIds: List<Long> = emptyList(),
+    val relatedProductIds: List<Long>? = emptyList(),
     val taxClassId: Long = 0L
 ) : ProductSaveVm<ProductVariationPostVm> {
     override fun variations(): List<ProductVariationPostVm> {
@@ -75,7 +75,7 @@ data class ProductPostVm(
     }
 
     override fun productImageIds(): List<Long> {
-        return productImageIds
+        return productImageIds!!
     }
 }
 

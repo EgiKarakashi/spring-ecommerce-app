@@ -30,6 +30,6 @@ data class ProductDetailVm(
     val metaKeyword: String?,
     val metaDescription: String?,
     val thumbnailMedia: ImageVm?,
-    val productImageMedias: MutableList<ImageVm?>,
+    val productImageMedias: MutableList<ImageVm?>?,
     val taxClassId: Long?
 )

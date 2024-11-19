@@ -14,13 +14,13 @@ import java.time.ZonedDateTime
 abstract class AbstractAuditEntity {
 
     @CreationTimestamp
-    val createdOn: ZonedDateTime? = null
+    var createdOn: ZonedDateTime? = null
 
     @CreatedBy
-    val createdBy: String? = null
+    var createdBy: String? = null
 
     @UpdateTimestamp
-    val lastModifiedOn: ZonedDateTime? = null
+    var lastModifiedOn: ZonedDateTime? = null
 
     @LastModifiedBy
     var lastModifiedBy: String? = null
