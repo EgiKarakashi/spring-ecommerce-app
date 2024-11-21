@@ -319,7 +319,7 @@ class ProductService(
     ): List<ProductOptionValue> {
         val optionValues = mutableListOf<ProductOptionValue>()
 
-        productPostVm.productOptionValues!!.forEach { optionValueVm ->
+        productPostVm.productOptionValues.forEach { optionValueVm ->
             optionValueVm.value.forEach { value ->
                 val optionValue =
                     ProductOptionValue(

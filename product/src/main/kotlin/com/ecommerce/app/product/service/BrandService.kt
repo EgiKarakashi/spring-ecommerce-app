@@ -59,9 +59,14 @@ class BrandService(
         }
     }
 
-    private fun checkExistedName(name: String, id: Long): Boolean {
-        return brandRepository.findExistedName(name, id) != null
+    private fun checkExistedName(name: String, id: Long?): Boolean {
+        return if (id == null) {
+            brandRepository.findByName(name) != null
+        } else {
+            brandRepository.findByNameAndNotId(name, id) != null
+        }
     }
+
 
     fun getBrandsByIds(ids: List<Long>): List<BrandVm> {
         return brandRepository.findAllById(ids).map { BrandVm.fromModel(it) }

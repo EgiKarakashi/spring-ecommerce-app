@@ -1,15 +1,21 @@
 package com.ecommerce.app.customer.service
 
 import com.ecommerce.app.commonlibrary.exception.AccessDeniedException
+import com.ecommerce.app.commonlibrary.exception.DuplicatedException
 import com.ecommerce.app.commonlibrary.exception.NotFoundException
 import com.ecommerce.app.commonlibrary.exception.WrongEmailFormatException
 import com.ecommerce.app.customer.config.KeycloakPropsConfig
 import com.ecommerce.app.customer.utils.Constants
 import com.ecommerce.app.customer.viewmodel.customer.CustomerAdminVm
 import com.ecommerce.app.customer.viewmodel.customer.CustomerListVm
+import com.ecommerce.app.customer.viewmodel.customer.CustomerPostVm
+import com.ecommerce.app.customer.viewmodel.customer.CustomerVm
 import org.apache.commons.validator.routines.EmailValidator
+import org.keycloak.admin.client.CreatedResponseUtil
 import org.keycloak.admin.client.Keycloak
+import org.keycloak.admin.client.resource.RealmResource
 import org.keycloak.representations.idm.CredentialRepresentation
+import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.stereotype.Service
 import javax.ws.rs.ForbiddenException
 
@@ -60,6 +66,51 @@ class CustomerService(
         } catch (ex: ForbiddenException) {
             throw AccessDeniedException(String.format(ERROR_FORMAT, ex.message, keycloakPropsConfig.resource))
         }
+    }
+
+    fun create(customerPostVm: CustomerPostVm): CustomerVm {
+        // Get realm
+        val realmResource = keycloak.realm(keycloakPropsConfig.realm)
+
+        if (checkUsernameExists(realmResource, customerPostVm.username)) {
+            throw DuplicatedException(Constants.ErrorCode.USERNAME_ALREADY_EXITED, customerPostVm.username)
+        }
+        if (checkEmailExists(realmResource, customerPostVm.email)) {
+            throw DuplicatedException(Constants.ErrorCode.USER_WITH_EMAIL_ALREADY_EXITED, customerPostVm.email)
+        }
+
+        // Define user
+        val user = UserRepresentation().apply {
+            username = customerPostVm.username
+            firstName = customerPostVm.firstName
+            lastName = customerPostVm.lastName
+            email = customerPostVm.email
+            credentials = listOf(createPasswordCredentials(customerPostVm.password))
+            isEnabled = true
+        }
+
+        val response = realmResource.users().create(user)
+
+        // Get new user
+        val userId = CreatedResponseUtil.getCreatedId(response)
+        val userResource = realmResource.users().get(userId)
+
+        // Assign realm role to user
+        val realmRole = realmResource.roles().get(customerPostVm.role).toRepresentation()
+        userResource.roles().realmLevel().add(listOf(realmRole))
+
+        return CustomerVm.fromUserRepresentation(user)
+    }
+
+    fun checkUsernameExists(realmResource: RealmResource, username: String): Boolean {
+        val users = realmResource.users().search(username, true)
+        return !users.isEmpty()
+    }
+
+
+    fun checkEmailExists(realmResource: RealmResource, email: String): Boolean {
+        val users = realmResource.users().search(null, null, null, email, 0, 1)
+        return !users.isEmpty()
     }
 }
 

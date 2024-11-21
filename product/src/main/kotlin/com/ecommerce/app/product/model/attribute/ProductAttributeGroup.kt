@@ -7,7 +7,7 @@ import jakarta.persistence.*
 data class ProductAttributeGroup(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 1L,
 
-    var name: String? = null
+    var name: String = ""
 )

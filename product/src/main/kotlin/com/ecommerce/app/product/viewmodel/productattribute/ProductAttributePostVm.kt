@@ -9,5 +9,5 @@ import jakarta.validation.constraints.NotBlank
 data class ProductAttributePostVm(
     @field:NotBlank
     val name: String,
-    val productAttributeGroupId: Long
+    val productAttributeGroupId: Long?
 )

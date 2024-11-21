@@ -1,69 +1,65 @@
 import React, {MouseEventHandler, useState} from "react";
 import Head from "next/head";
 import {Navbar} from "react-bootstrap";
-import styles from '../../styles/Layout.module.css';
+import AuthenticationInfo from "@/common/components/AuthenticationInfo";
 import Link from "next/link";
 import {ToastContainer} from "react-toastify";
 import {
   menu_catalog_item_data,
-  menu_customer_item_data,
-  menu_inventory_item_data,
-  menu_location_item_data,
-  menu_promotion_item_data,
-  menu_sale_item_data,
-  menu_system_item_data,
-  menu_tax_item_data,
-} from '@/asset/data/sidebar';
-import AuthenticationInfo from "@/common/components/AuthenticationInfo";
+  menu_customer_item_data, menu_inventory_item_data,
+  menu_location_item_data, menu_promotion_item_data,
+  menu_sale_item_data, menu_system_item_data, menu_tax_item_data
+} from "@/asset/data/sidebar";
+import styles  from "@/styles/Layout.module.css";
+
 
 interface DataProps {
   id: number;
   name: string;
-  link: string
+  link: string;
 }
-
 interface MenuProps {
   name: string;
   childActive: string;
   changeMenu: MouseEventHandler;
-  changeChildMenu: MouseEventHandler
+  changeChildMenu: MouseEventHandler;
 }
 
 type Props = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
-export default function Layout({children}: Props) {
-  const [isSidebarActive, setIsSidebarActive] = useState<boolean>(false);
-  const [ menuActive, setMenuActive] = useState<string>('catalog');
-  const [childActive, setChildActive] = useState<string>("Brands");
+export default function Layout({ children }: Props) {
+  const [isSidebarActive, setIsSidebarActive] = useState(false);
+  const [menuActive, setMenuActive] = useState('catalog');
+  const [childActive, setChildActive] = useState('Brands');
 
   const sidebarToggleClick = () => {
     setIsSidebarActive((current) => !current);
-  }
+  };
 
   const menuChangeClick = (name: any) => {
     setMenuActive(name);
-  }
+  };
 
   const childChangeClick = (name: any) => {
-    setChildActive(name)
-  }
+    setChildActive(name);
+  };
 
   return (
     <>
       <Head>
         <title>Ecommerce - Backoffice</title>
-        <meta name="description" content="Ecommerce Shop Backoffice" />
-        <link rel="icon" href="/favicon.ico"/>
+        <meta name="description" content="Yet another shop backoffice" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="wrapper d-flex align-items-stretch">
-        <nav id='sidebar' className={isSidebarActive ? 'active' : ''}>
+        <nav id="sidebar" className={isSidebarActive ? 'active' : ''}>
           <Sidebar
-           changeChildMenu={childChangeClick}
-           childActive={childActive}
-           changeMenu={menuChangeClick}
-           name={menuActive}
+            changeChildMenu={childChangeClick}
+            childActive={childActive}
+            changeMenu={menuChangeClick}
+            name={menuActive}
           />
         </nav>
         <div id="content">
@@ -79,7 +75,7 @@ export default function Layout({children}: Props) {
             </button>
             <Navbar.Collapse className="justify-content-end">
               <Navbar.Text>
-                <AuthenticationInfo/>
+                <AuthenticationInfo />
               </Navbar.Text>
             </Navbar.Collapse>
           </Navbar>
@@ -110,7 +106,7 @@ export default function Layout({children}: Props) {
         theme="colored"
       />
     </>
-  )
+  );
 }
 
 const Sidebar = (menu: MenuProps) => {
@@ -205,7 +201,7 @@ const Sidebar = (menu: MenuProps) => {
           >
             <span className="fa fa-location-arrow"></span> Location
           </Link>
-          <ul className="collapse list-unstyled" id="locationSubmenu">
+          <ul className="list-unstyled" id="locationSubmenu">
             <ListItem
               data={menu_location_item_data}
               childActive={menu.childActive}
@@ -326,4 +322,3 @@ const ListItem: React.FC<DataListProps> = (props) => {
     </>
   );
 };
-

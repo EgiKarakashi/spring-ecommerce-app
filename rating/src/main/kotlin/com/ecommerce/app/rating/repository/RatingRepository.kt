@@ -13,19 +13,20 @@ interface RatingRepository: JpaRepository<Rating, Long> {
     fun findByProductId(id: Long, pageable: Pageable): Page<Rating>
 
     @Query(
-        ("SELECT r FROM Rating r "
-                + "Where (LOWER(r.productName) LIKE %:productName%) "
-                + "AND CONCAT(LOWER(r.firstName), ' ', LOWER(r.lastName)) LIKE %:customerName% "
-                + "AND LOWER(r.content) LIKE %:message% "
-                + "AND r.createdOn BETWEEN :createdFrom AND :createdTo"))
-    fun getRatingListWithFilter(
-        @Param("productName") productName: String,
-        @Param("customerName") customerName: String,
-        @Param("message") message: String,
-        @Param("createdFrom") createdFrom: ZonedDateTime,
-        @Param("createdTo") createdTo: ZonedDateTime,
-        pageable: Pageable
-    ): Page<Rating>
+    "SELECT r FROM Rating r " +
+    "WHERE LOWER(r.productName) LIKE LOWER(CONCAT('%', :productName, '%')) " +
+    "AND LOWER(CONCAT(r.firstName, ' ', r.lastName)) LIKE LOWER(CONCAT('%', :customerName, '%')) " +
+    "AND LOWER(r.content) LIKE LOWER(CONCAT('%', :message, '%')) " +
+    "AND r.createdOn BETWEEN :createdFrom AND :createdTo"
+)
+fun getRatingListWithFilter(
+    @Param("productName") productName: String,
+    @Param("customerName") customerName: String,
+    @Param("message") message: String,
+    @Param("createdFrom") createdFrom: ZonedDateTime,
+    @Param("createdTo") createdTo: ZonedDateTime,
+    pageable: Pageable
+): Page<Rating>
 
     @Query("SELECT r FROM Rating r ORDER BY  r.createdOn DESC ")
     fun getLatestRatings(pageable: Pageable): List<Rating>

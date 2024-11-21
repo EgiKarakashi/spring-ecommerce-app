@@ -8,13 +8,13 @@ import jakarta.persistence.*
 data class ProductAttribute(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 1L,
 
-    val name: String? = null,
+    var name: String = "",
 
     @ManyToOne
     @JoinColumn(name = "product_attribute_group_id")
-    val productAttributeGroup: ProductAttributeGroup? = null,
+    var productAttributeGroup: ProductAttributeGroup = ProductAttributeGroup(),
 
     @OneToMany(mappedBy = "productAttribute")
     @JsonIgnore
