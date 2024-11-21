@@ -37,13 +37,13 @@ jobs:
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
           path: '**/product-checkstyle-result.xml'
-      - name: Test Results
-        uses: dorny/test-reporter@v1
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success()) || failure() }}
-        with:
-          name: Product-Service-Unit-Test-Results
-          path: "product/**/*-reports/TEST*.xml"
-          reporter: java-junit
+#      - name: Test Results
+#        uses: dorny/test-reporter@v1
+#        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success()) || failure() }}
+#        with:
+#          name: Product-Service-Unit-Test-Results
+#          path: "product/**/*-reports/TEST*.xml"
+#          reporter: java-junit
       - name: Analyze with SonarCloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
