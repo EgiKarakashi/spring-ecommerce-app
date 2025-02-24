@@ -13,21 +13,76 @@ import org.mapstruct.MappingTarget
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
-@Mapper(componentModel = "spring")
+//@Mapper(componentModel = "spring")
+//@Component
+//interface CheckoutMapper {
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "checkout", ignore = true)
+//    fun toModel(checkoutItemPostVm: CheckoutItemPostVm?): CheckoutItem?
+//
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "checkoutState", ignore = true)
+//    @Mapping(target = "totalAmount", source = "totalAmount")
+//    @Mapping(target = "totalDiscountAmount", source = "totalDiscountAmount")
+//    fun toModel(checkoutPostVm: CheckoutPostVm?): Checkout?
+//
+//    fun toVm(checkoutItem: CheckoutItem?): CheckoutItemVm?
+//
+//    @Mapping(target = "checkoutItemVms", ignore = true)
+//    fun toVm(checkout: Checkout?): CheckoutVm?
+//}
+
 @Component
-interface CheckoutMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "checkout", ignore = true)
-    fun toModel(checkoutItemPostVm: CheckoutItemPostVm?): CheckoutItem?
+class CheckoutMapper {
+    fun toModel(checkoutItemPostVm: CheckoutItemPostVm?): CheckoutItem? {
+        if (checkoutItemPostVm == null) return null
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "checkoutState", ignore = true)
-    @Mapping(target = "totalAmount", source = "totalAmount")
-    @Mapping(target = "totalDiscountAmount", source = "totalDiscountAmount")
-    fun toModel(checkoutPostVm: CheckoutPostVm?): Checkout?
+        return CheckoutItem(
+            id = null,
+            checkout = null
+        )
+    }
 
-    fun toVm(checkoutItem: CheckoutItem?): CheckoutItemVm?
+    fun toModel(checkoutPostVm: CheckoutPostVm?): Checkout? {
+        if (checkoutPostVm == null) return null
 
-    @Mapping(target = "checkoutItemVms", ignore = true)
-    fun toVm(checkout: Checkout?): CheckoutVm?
+        return Checkout(
+            id = null,
+            checkoutState = null,
+            totalAmount = checkoutPostVm.totalAmount,
+            totalDiscountAmount = checkoutPostVm.totalDiscountAmount
+        )
+    }
+
+    fun toVm(checkoutItem: CheckoutItem?): CheckoutItemVm? {
+        if (checkoutItem == null) return null
+
+        return CheckoutItemVm(
+            id = checkoutItem.id!!,
+            productId = null,
+            productName = null,
+            quantity = null,
+            productPrice = null,
+            note = null,
+            discountAmount = null,
+            taxAmount = null,
+            taxPercent = null,
+            checkoutId = null
+        )
+    }
+
+    fun toVm(checkout: Checkout?): CheckoutVm? {
+        if (checkout == null) return null
+
+        return CheckoutVm(
+            id = checkout.id,
+            checkoutItemVms = emptyList(),
+            email = null,
+            note = null,
+            couponCode = null,
+            totalAmount = null,
+            totalDiscountAmount = null
+        )
+    }
 }
+

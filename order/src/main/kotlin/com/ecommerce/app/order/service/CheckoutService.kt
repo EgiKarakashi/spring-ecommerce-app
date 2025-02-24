@@ -30,6 +30,7 @@ class CheckoutService(
     val orderService: OrderService,
     val checkoutMapper: CheckoutMapper
 ) {
+
     fun createCheckout(checkoutPostVm: CheckoutPostVm): CheckoutVm? {
         val checkout = checkoutMapper.toModel(checkoutPostVm)
         checkout?.checkoutState = CheckoutState.PENDING

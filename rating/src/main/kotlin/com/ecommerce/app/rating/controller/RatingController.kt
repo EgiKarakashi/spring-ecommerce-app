@@ -48,7 +48,7 @@ class RatingController(private val ratingService: RatingService) {
         return ResponseEntity.ok(ratingService.deleteRating(id))
     }
 
-    @GetMapping("/storefront/ratings/{productId}")
+    @GetMapping("/storefront/ratings/products/{productId}")
     fun getRatingList(
         @PathVariable productId: Long,
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) pageNo: Int,

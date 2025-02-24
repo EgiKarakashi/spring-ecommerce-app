@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -59,5 +60,16 @@ class CustomerController(
         return ResponseEntity.created(uriComponentsBuilder.replacePath("/customers/{id}")
             .buildAndExpand(customer.id).toUri())
             .body(customer)
+    }
+
+    @GetMapping("/storefront/customer/profile")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Ok", content = [Content(schema = Schema(implementation = CustomerVm::class))]),
+        ApiResponse(responseCode = "403", description = "Access denied", content = [Content(schema = Schema(implementation = ErrorVm::class))]),
+    ])
+    fun getCustomerProfile(): ResponseEntity<CustomerVm> {
+        return ResponseEntity.ok(customerService.getCustomerProfile(
+            SecurityContextHolder.getContext().authentication.name.toString())
+        )
     }
 }

@@ -2,7 +2,6 @@ package com.ecommerce.app.search.service
 
 import com.ecommerce.app.search.model.ProductCriteriaDto
 import com.ecommerce.app.search.viewmodel.ProductListGetVm
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregation
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsAggregate
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery
@@ -30,28 +29,6 @@ class ProductService(
 ) {
 
     fun findProductAdvance(productCriteria: ProductCriteriaDto): ProductListGetVm {
-//        val nativeQuery = NativeQuery.builder()
-//            .withAggregation("categories", Aggregation.of { a ->
-//                a.terms { ta -> ta.field(ProductField.CATEGORIES) }
-//            })
-//            .withAggregation("attributes", Aggregation.of { a ->
-//                a.terms { ta -> ta.field(ProductField.ATTRIBUTES) }
-//            })
-//            .withAggregation("brands", Aggregation.of { a ->
-//                a.terms { ta -> ta.field(ProductField.BRAND) }
-//            })
-//            .withQuery { q ->
-//                q.bool { b ->
-//                    b.should { s ->
-//                        s.multiMatch { m ->
-//                            m.fields(ProductField.NAME, ProductField.BRAND, ProductField.CATEGORIES)
-//                                .query(productCriteria.keyword)
-//                                .fuzziness(Fuzziness.ONE.asString())
-//                        }
-//                    }
-//                }
-//            }
-//            .withPageable(PageRequest.of(productCriteria.page, productCriteria.size))
 
         val nativeQuery = NativeQuery.builder()
             .withQuery { q ->

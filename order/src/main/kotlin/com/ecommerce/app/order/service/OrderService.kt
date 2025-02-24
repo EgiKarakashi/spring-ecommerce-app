@@ -20,7 +20,9 @@ import com.ecommerce.app.order.utils.Constants
 import com.ecommerce.app.order.utils.Constants.ErrorCode.ORDER_NOT_FOUND
 import com.ecommerce.app.order.viewmodel.order.*
 import com.ecommerce.app.order.viewmodel.promotion.PromotionUsageVm
+import lombok.AllArgsConstructor
 import lombok.extern.slf4j.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -35,13 +37,14 @@ import kotlin.jvm.Throws
 @Slf4j
 @Service
 @Transactional
+@AllArgsConstructor
 class OrderService(
     val orderRepository: OrderRepository,
     val orderItemRepository: OrderItemRepository,
     val productService: ProductService,
     val cartService: CartService,
     val promotionService: PromotionService,
-    private val orderMapper: OrderMapper
+    val orderMapper: OrderMapper
 ) {
     fun createOrder(orderPostVm: OrderPostVm): OrderVm {
         val billingAddressPostVm = orderPostVm.billingAddressPostVm
@@ -266,7 +269,7 @@ class OrderService(
             return CsvExporter.exportToCsv(mutableListOf(), OrderItemCsv::class.java)
         }
 
-        val orders = orderListVm.orderList?.stream()?.map { orderMapper!!::toCsv }?.collect(
+        val orders = orderListVm.orderList?.stream()?.map { orderMapper::toCsv }?.collect(
             Collectors.toUnmodifiableList()
         ) as List<BaseCsv>
         return CsvExporter.exportToCsv(orders, OrderItemCsv::class.java)

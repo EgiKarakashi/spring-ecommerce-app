@@ -33,6 +33,9 @@ management:
     tags:
       application: ${spring.application.name}
 logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 ---

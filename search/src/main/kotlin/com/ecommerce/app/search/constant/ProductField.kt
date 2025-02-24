@@ -7,5 +7,5 @@ object ProductField {
     const val IS_PUBLISHED = "isPublished"
     const val CATEGORIES = "categories"
     const val ATTRIBUTES = "attributes"
-    const val CREATE_ON = "createOn"
+    const val CREATE_ON = "createdOn"
 }

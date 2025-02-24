@@ -5,7 +5,7 @@
   "database.dbname": "order",
   "database.hostname": "postgres",
   "database.password": "postgres",
-  "database.port": "5433",
+  "database.port": "5432",
   "key.converter.schemas.enable": "false",
   "value.converter.schemas.enable": "false",
   "value.converter": "org.apache.kafka.connect.json.JsonConverter",

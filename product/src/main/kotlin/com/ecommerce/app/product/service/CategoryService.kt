@@ -160,4 +160,9 @@ class CategoryService(
     fun getCategoryByIds(ids: List<Long>): List<CategoryGetVm> {
         return categoryRepository.findAllById(ids).stream().map { CategoryGetVm.fromModel(it) }.toList()
     }
+
+    fun getTopNthCategories(limit: Int): List<String> {
+        val pageable = PageRequest.of(0, limit)
+        return categoryRepository.findCategoriesOrderedByProductCount(pageable);
+    }
 }

@@ -20,6 +20,8 @@
     <modules>
         <module>common-library</module>
         <module>backoffice-bff</module>
+        <module>storefront-bff</module>
+        <module>cart</module>
         <module>media</module>
         <module>sampledata</module>
         <module>product</module>
@@ -28,6 +30,7 @@
         <module>customer</module>
         <module>search</module>
         <module>tax</module>
+        <module>recommendation</module>
     </modules>
 
     <properties>

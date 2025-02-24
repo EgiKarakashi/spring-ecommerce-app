@@ -21,11 +21,11 @@ import javax.ws.rs.ForbiddenException
 
 @Service
 class CustomerService(
-    private val ERROR_FORMAT: String = "%s: Client %s doesn't have access rights for this resource",
-    private val USER_PER_PAGE: Int = 2,
     private val keycloak: Keycloak,
     private val keycloakPropsConfig: KeycloakPropsConfig
 ) {
+    private val ERROR_FORMAT: String = "%s: Client %s doesn't have access rights for this resource"
+    private val USER_PER_PAGE: Int = 2
     companion object {
         fun createPasswordCredentials(password: String): CredentialRepresentation {
             return CredentialRepresentation().apply {
@@ -111,6 +111,14 @@ class CustomerService(
     fun checkEmailExists(realmResource: RealmResource, email: String): Boolean {
         val users = realmResource.users().search(null, null, null, email, 0, 1)
         return !users.isEmpty()
+    }
+
+    fun getCustomerProfile(userId: String): CustomerVm {
+        try {
+            return CustomerVm.fromUserRepresentation(keycloak.realm(keycloakPropsConfig.realm).users().get(userId).toRepresentation())
+        } catch (ex: ForbiddenException) {
+            throw AccessDeniedException(String.format(ERROR_FORMAT, ex.message, keycloakPropsConfig.resource))
+        }
     }
 }
 

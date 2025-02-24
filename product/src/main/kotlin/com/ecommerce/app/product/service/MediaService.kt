@@ -50,10 +50,8 @@ class MediaService(
         }
         val url: URI = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.media)
             .path("/{id}").buildAndExpand(id).toUri()
-        val jwt: String = (SecurityContextHolder.getContext().authentication.principal as Jwt).tokenValue
         return restClient.get()
             .uri(url)
-            .headers { h -> h.setBearerAuth(jwt) }
             .retrieve()
             .body(NoFileMediaVm::class.java)
     }
@@ -61,7 +59,7 @@ class MediaService(
     @Retry(name = "restApi")
     @CircuitBreaker(name = "restCircuitBreaker", fallbackMethod = "handleMediaFallback")
     fun removeMedia(id: Long) {
-        val url: URI =  UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.media).path("/media/{id}")
+        val url: URI =  UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.media).path("/medias/{id}")
             .buildAndExpand(id).toUri()
         val jwt: String = (SecurityContextHolder.getContext().authentication.principal as Jwt).tokenValue
         restClient.delete()

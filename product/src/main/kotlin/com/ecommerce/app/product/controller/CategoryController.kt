@@ -1,6 +1,7 @@
 package com.ecommerce.app.product.controller
 
 import com.ecommerce.app.commonlibrary.exception.BadRequestException
+import com.ecommerce.app.product.constants.PageableConstant
 import com.ecommerce.app.product.repository.CategoryRepository
 import com.ecommerce.app.product.service.CategoryService
 import com.ecommerce.app.product.utils.Constants
@@ -113,5 +114,12 @@ class CategoryController(
     ])
     fun getCategoriesById(@RequestParam ids: List<Long>): ResponseEntity<List<CategoryGetVm>> {
         return ResponseEntity.ok(categoryService.getCategoryByIds(ids))
+    }
+
+    @GetMapping("/storefront/categories/suggestions")
+    fun listTopNthCategories(
+        @RequestParam(value = "limit", defaultValue = PageableConstant.DEFAULT_PAGE_SIZE, required = false) limit: Int
+    ): ResponseEntity<List<String>> {
+        return ResponseEntity.ok(categoryService.getTopNthCategories(limit))
     }
 }

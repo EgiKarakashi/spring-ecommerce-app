@@ -1,0 +1,18 @@
+name: backoffice-bff service ci
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "backoffice-bff/**"
+      - ".github/workflows/actions/action.yaml"
+      - ".github/workflows/backoffice-bff-ci.yaml"
+      - "pom.xml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "backoffice-bff/**"
+      - ".github/workflows/actions/action.yaml"
+      - ".github/workflows/backoffice-bff-ci.yaml"
+      - "pom.xml"
+  workflow_dispatch:

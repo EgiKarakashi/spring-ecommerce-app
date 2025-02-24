@@ -1,6 +1,7 @@
 package com.ecommerce.app.product.repository
 
 import com.ecommerce.app.product.model.Category
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -15,4 +16,10 @@ interface CategoryRepository: JpaRepository<Category, Long> {
     fun findExistedName(name: String, id: Long): Category
 
     fun findByNameContainingIgnoreCase(name: String): List<Category>
+
+    @Query("SELECT c.name FROM Category  c "
+    + "JOIN c.productCategories pc "
+    + "GROUP BY c.name "
+    + "ORDER BY COUNT(pc.product.id) DESC")
+    fun findCategoriesOrderedByProductCount(pageable: Pageable): List<String>
 }
