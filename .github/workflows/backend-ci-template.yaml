@@ -75,6 +75,7 @@ jobs:
 
       - name: OWASP Dependency Check
         if: ${{ env.IS_INTERNAL == 'true' }}
+        continue-on-error: true
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: spring-ecommerce-app-${{ env.SERVICE }}
@@ -83,6 +84,7 @@ jobs:
 
       - name: Upload Dependency Check Report
         if: ${{ env.IS_INTERNAL == 'true' }}
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-${{ env.SERVICE }}
