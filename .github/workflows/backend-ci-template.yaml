@@ -81,7 +81,7 @@ jobs:
         with:
           registry: ${{ secrets.acr_login_server || 'ghcr.io' }}
           username: ${{ secrets.acr_username || github.actor }}
-          password: ${{ secrets.acr_password || secrets.ghcr_token }}
+          password: ${{ secrets.acr_password || secrets.ghcr_token || secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Image
         if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}

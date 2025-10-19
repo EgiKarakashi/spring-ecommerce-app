@@ -1,3 +1,5 @@
+name: 'Setup Java and Cache'
+description: 'Sets up JDK 21 and configures Maven and SonarCloud caching'
 runs:
   using: "composite"
   steps:
