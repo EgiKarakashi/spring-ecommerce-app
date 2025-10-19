@@ -23,5 +23,4 @@ jobs:
     with:
       service: recommendation
     secrets:
-      sonar-token: ${{ secrets.SONAR_TOKEN }}
-      ghcr-token: ${{ secrets.TOKEN }}
+      ghcr_token: ${{ secrets.TOKEN }}

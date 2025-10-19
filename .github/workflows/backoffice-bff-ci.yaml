@@ -24,5 +24,4 @@ jobs:
       service: backoffice-bff
       docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/backoffice-bff:${{ github.sha }}
     secrets:
-      sonar-token: ${{ secrets.SONAR_TOKEN }}
-      ghcr-token: ${{ secrets.TOKEN }}
+      ghcr_token: ${{ secrets.TOKEN }}

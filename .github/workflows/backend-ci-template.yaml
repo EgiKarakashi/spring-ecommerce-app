@@ -19,15 +19,13 @@ on:
         type: string
         default: ""
     secrets:
-      sonar-token:
+      ghcr_token:
         required: false
-      ghcr-token:
+      acr_login_server:
         required: false
-      acr-login-server:
+      acr_username:
         required: false
-      acr-username:
-        required: false
-      acr-password:
+      acr_password:
         required: false
 
 jobs:
@@ -35,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SERVICE: ${{ inputs.service }}
-      IS_INTERNAL: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+      IS_INTERNAL: ${{ github.event_name != 'pull_request' || (github.event.pull_request && github.event.pull_request.head.repo.full_name == github.repository) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,12 +55,6 @@ jobs:
         with:
           path: "**/${{ env.SERVICE }}-checkstyle.result.xml"
 
-      - name: SonarCloud Scan
-        if: ${{ env.IS_INTERNAL == 'true' && secrets.sonar-token }}
-        env:
-          SONAR_TOKEN: ${{ secrets.sonar-token }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl ${{ inputs.package }} -am
-
       - name: OWASP Dependency Check
         if: ${{ env.IS_INTERNAL == 'true' }}
         uses: dependency-check/Dependency-Check_Action@main
@@ -82,9 +74,9 @@ jobs:
         if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.acr-login-server || 'ghcr.io' }}
-          username: ${{ secrets.acr-username || github.actor }}
-          password: ${{ secrets.acr-password || secrets.ghcr-token }}
+          registry: ${{ secrets.acr_login_server || 'ghcr.io' }}
+          username: ${{ secrets.acr_username || github.actor }}
+          password: ${{ secrets.acr_password || secrets.ghcr_token }}
 
       - name: Build and Push Image
         if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}

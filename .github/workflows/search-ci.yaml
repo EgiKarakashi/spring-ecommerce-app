@@ -24,5 +24,4 @@ jobs:
       service: search
       docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/search:${{ github.sha }}
     secrets:
-      sonar-token: ${{ secrets.SONAR_TOKEN }}
-      ghcr-token: ${{ secrets.TOKEN }}
+      ghcr_token: ${{ secrets.TOKEN }}
