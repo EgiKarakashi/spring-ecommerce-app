@@ -1,0 +1,95 @@
+name: backend ci template
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      package:
+        required: false
+        type: string
+        default: ${{ inputs.service }}
+      docker-context:
+        required: false
+        type: string
+        default: ./${{ inputs.service }}
+      docker-tags:
+        required: false
+        type: string
+        default: ""
+    secrets:
+      sonar-token:
+        required: false
+      ghcr-token:
+        required: false
+      acr-login-server:
+        required: false
+      acr-username:
+        required: false
+      acr-password:
+        required: false
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE: ${{ inputs.service }}
+      IS_INTERNAL: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/actions
+
+      - name: Build and Test
+        run: mvn -pl ${{ inputs.package }} -am clean verify
+
+      - name: Run Checkstyle
+        if: ${{ env.IS_INTERNAL == 'true' }}
+        run: mvn checkstyle:checkstyle -pl ${{ inputs.package }} -am -Dcheckstyle.output.file=${{ env.SERVICE }}-checkstyle.result.xml
+
+      - name: Upload Checkstyle
+        if: ${{ env.IS_INTERNAL == 'true' }}
+        uses: jwgmeligmeyling/checkstyle-github-action@v2
+        with:
+          path: "**/${{ env.SERVICE }}-checkstyle.result.xml"
+
+      - name: SonarCloud Scan
+        if: ${{ env.IS_INTERNAL == 'true' && secrets.sonar-token }}
+        env:
+          SONAR_TOKEN: ${{ secrets.sonar-token }}
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl ${{ inputs.package }} -am
+
+      - name: OWASP Dependency Check
+        if: ${{ env.IS_INTERNAL == 'true' }}
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: spring-ecommerce-app-${{ env.SERVICE }}
+          path: "."
+          format: HTML
+
+      - name: Upload Dependency Check Report
+        if: ${{ env.IS_INTERNAL == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-${{ env.SERVICE }}
+          path: reports
+
+      - name: Login to Container Registry
+        if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.acr-login-server || 'ghcr.io' }}
+          username: ${{ secrets.acr-username || github.actor }}
+          password: ${{ secrets.acr-password || secrets.ghcr-token }}
+
+      - name: Build and Push Image
+        if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.docker-context }}
+          push: true
+          tags: ${{ inputs.docker-tags }}

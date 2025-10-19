@@ -1,28 +1,27 @@
-name: backoffice-bff service ci
+name: tax service ci
 
 on:
   push:
     branches: [main]
     paths:
-      - 'backoffice-bff/**'
-      - '.github/workflows/backoffice-bff-ci.yaml'
+      - 'tax/**'
+      - '.github/workflows/tax-ci.yaml'
       - '.github/workflows/backend-ci-template.yaml'
       - 'pom.xml'
   pull_request:
     branches: [main]
     paths:
-      - 'backoffice-bff/**'
-      - '.github/workflows/backoffice-bff-ci.yaml'
+      - 'tax/**'
+      - '.github/workflows/tax-ci.yaml'
       - '.github/workflows/backend-ci-template.yaml'
       - 'pom.xml'
   workflow_dispatch:
 
 jobs:
-  backoffice-bff:
+  tax:
     uses: ./.github/workflows/backend-ci-template.yaml
     with:
-      service: backoffice-bff
-      docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/backoffice-bff:${{ github.sha }}
+      service: tax
     secrets:
       sonar-token: ${{ secrets.SONAR_TOKEN }}
       ghcr-token: ${{ secrets.TOKEN }}
