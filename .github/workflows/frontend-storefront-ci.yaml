@@ -1,0 +1,68 @@
+name: storefront frontend ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'storefront/**'
+      - '.github/workflows/frontend-storefront-ci.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'storefront/**'
+      - '.github/workflows/frontend-storefront-ci.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: storefront
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+          cache-dependency-path: storefront/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload build artifact
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: storefront-build
+          path: .next
+
+      - name: Login to Container Registry
+        if: ${{ github.ref == 'refs/heads/main' && secrets.TOKEN }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Build and Push Image
+        if: ${{ github.ref == 'refs/heads/main' && secrets.TOKEN }}
+        uses: docker/build-push-action@v6
+        with:
+          context: storefront
+          push: true
+          tags: ghcr.io/egikarakashi/spring-ecommerce-app/storefront:${{ github.sha }}

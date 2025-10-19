@@ -6,15 +6,15 @@ on:
       service:
         required: true
         type: string
-      package:
-        required: false
-        type: string
-        default: ${{ inputs.service }}
       docker-context:
         required: false
         type: string
-        default: ./${{ inputs.service }}
+        default: ""
       docker-tags:
+        required: false
+        type: string
+        default: ""
+      build-command:
         required: false
         type: string
         default: ""
@@ -43,11 +43,16 @@ jobs:
       - uses: ./.github/workflows/actions
 
       - name: Build and Test
-        run: mvn -pl ${{ inputs.package }} -am clean verify
+        run: |
+          if [ -n "${{ inputs.build-command }}" ]; then
+            eval "${{ inputs.build-command }}"
+          else
+            mvn -pl ${{ inputs.service }} -am clean verify
+          fi
 
       - name: Run Checkstyle
         if: ${{ env.IS_INTERNAL == 'true' }}
-        run: mvn checkstyle:checkstyle -pl ${{ inputs.package }} -am -Dcheckstyle.output.file=${{ env.SERVICE }}-checkstyle.result.xml
+        run: mvn checkstyle:checkstyle -pl ${{ inputs.service }} -am -Dcheckstyle.output.file=${{ env.SERVICE }}-checkstyle.result.xml
 
       - name: Upload Checkstyle
         if: ${{ env.IS_INTERNAL == 'true' }}
@@ -82,6 +87,6 @@ jobs:
         if: ${{ inputs.docker-tags != '' && github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.docker-context }}
+          context: ${{ inputs.docker-context != '' && inputs.docker-context || format('./{0}', inputs.service) }}
           push: true
           tags: ${{ inputs.docker-tags }}
