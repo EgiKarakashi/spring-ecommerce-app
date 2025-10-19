@@ -28,5 +28,4 @@ jobs:
     with:
       service: product
       docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/product:${{ github.sha }}
-    secrets:
-      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit

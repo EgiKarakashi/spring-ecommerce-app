@@ -28,5 +28,4 @@ jobs:
     with:
       service: media
       docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/media:${{ github.sha }}
-    secrets:
-      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit

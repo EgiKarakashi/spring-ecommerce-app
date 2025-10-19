@@ -26,5 +26,4 @@ jobs:
     uses: ./.github/workflows/backend-ci-template.yaml
     with:
       service: cart
-    secrets:
-      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit
