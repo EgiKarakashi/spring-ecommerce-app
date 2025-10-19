@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload Checkstyle
         if: ${{ env.IS_INTERNAL == 'true' }}
-        uses: jwgmeligmeyling/checkstyle-github-action@v2
+        uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
           path: "**/${{ env.SERVICE }}-checkstyle.result.xml"
 
