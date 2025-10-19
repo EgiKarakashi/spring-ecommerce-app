@@ -1,5 +1,5 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Appilcation
+kind: Application
 metadata:
   name: workloads
   namespace: argocd
