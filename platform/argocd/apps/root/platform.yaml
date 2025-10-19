@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Applcation
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/EgiKarakashi/spring-ecommerce-app.git
+    targetRevision: main
+    path: platform/argocd/apps/platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
