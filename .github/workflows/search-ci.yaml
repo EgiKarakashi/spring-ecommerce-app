@@ -19,9 +19,14 @@ on:
 
 jobs:
   search:
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+      packages: write
     uses: ./.github/workflows/backend-ci-template.yaml
     with:
       service: search
       docker-tags: ghcr.io/egikarakashi/spring-ecommerce-app/search:${{ github.sha }}
     secrets:
-      ghcr_token: ${{ secrets.TOKEN }}
+      ghcr_token: ${{ secrets.GITHUB_TOKEN }}

@@ -19,8 +19,12 @@ on:
 
 jobs:
   common-library:
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     uses: ./.github/workflows/backend-ci-template.yaml
     with:
       service: common-library
     secrets:
-      ghcr_token: ${{ secrets.TOKEN }}
+      ghcr_token: ${{ secrets.GITHUB_TOKEN }}
